@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Code Assistant</title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+    <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/styles/atom-one-dark.min.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/highlight.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/python.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/java.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/c.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/highlight.js/11.7.0/languages/cpp.min.js"></script>
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>Code Assistant</h1>
+            <p>Ask questions about C, C++, Python, or Java programming</p>
+        </header>
+
+        <main>
+            <div class="input-section">
+                <div class="language-selector">
+                    <label for="language-select">Select Language:</label>
+                    <select id="language-select">
+                        <option value="python">Python</option>
+                        <option value="java">Java</option>
+                        <option value="c">C</option>
+                        <option value="cpp">C++</option>
+                    </select>
+                </div>
+                <div class="question-input">
+                    <label for="question-input">Your Question:</label>
+                    <textarea id="question-input" placeholder="Type your question here..."></textarea>
+                </div>
+                <button id="ask-button">Ask Question</button>
+            </div>
+
+            <div class="response-section">
+                <h2>Response</h2>
+                <div class="code-container">
+                    <pre><code id="response-output" class="language-python"></code></pre>
+                </div>
+            </div>
+
+            <div class="suggestions">
+                <h3>Try asking about:</h3>
+                <div class="suggestion-tags">
+                    <span class="tag">Hello World</span>
+                    <span class="tag">Loops</span>
+                    <span class="tag">Functions</span>
+                    <span class="tag">Classes</span>
+                    <span class="tag">Arrays</span>
+                    <span class="tag">If Statements</span>
+                    <span class="tag">Try-Catch</span>
+                    <span class="tag">Pointers</span>
+                    <span class="tag">Vectors</span>
+                    <span class="tag">Structs</span>
+                </div>
+            </div>
+        </main>
+    </div>
+
+    <script>
+        document.getElementById('ask-button').addEventListener('click', async () => {
+            const language = document.getElementById('language-select').value;
+            const question = document.getElementById('question-input').value;
+            const responseOutput = document.getElementById('response-output');
+
+            if (!question.trim()) {
+                alert('Please enter a question');
+                return;
+            }
+
+            try {
+                const response = await fetch('/ask', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify({ language, question }),
+                });
+
+                const data = await response.json();
+                responseOutput.textContent = data.response;
+                responseOutput.className = `language-${language}`;
+                hljs.highlightElement(responseOutput);
+            } catch (error) {
+                responseOutput.textContent = 'Error: Could not get response. Please try again.';
+            }
+        });
+
+        // Add click handlers for suggestion tags
+        document.querySelectorAll('.tag').forEach(tag => {
+            tag.addEventListener('click', () => {
+                const questionInput = document.getElementById('question-input');
+                questionInput.value = `How to use ${tag.textContent.toLowerCase()}?`;
+            });
+        });
+
+        // Initialize syntax highlighting
+        hljs.highlightAll();
+    </script>
+</body>
+</html> 
