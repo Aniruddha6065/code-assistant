@@ -4,10 +4,25 @@ __pycache__/
 *$py.class
 *.so
 .Python
-venv/
 env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual Environment
+venv/
 ENV/
-.env
 
 # IDE
 .idea/
@@ -15,10 +30,16 @@ ENV/
 *.swp
 *.swo
 
+# Database
+*.db
+*.sqlite3
+
+# Environment variables
+.env
+
+# Logs
+*.log
+
 # OS
 .DS_Store
 Thumbs.db
-
-# Flask
-instance/
-.webassets-cache 
